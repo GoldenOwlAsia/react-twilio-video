@@ -18,6 +18,8 @@ export default class Room extends Component {
     this.handleJoinRoom = this.handleJoinRoom.bind(this);
     this.handleLeaveRoom = this.handleLeaveRoom.bind(this);
     this.handleInputRoomName = this.handleInputRoomName.bind(this);
+    this.handlePause = this.handlePause.bind(this);
+    this.handlePlay = this.handlePlay.bind(this);
   }
 
   roomJoined(room) {
@@ -28,6 +30,7 @@ export default class Room extends Component {
     // Attach LocalParticipant's Tracks, if not already attached.
     const previewContainer = document.getElementById('local-media');
     if (!previewContainer.querySelector('video')) {
+      this.props.onSetPreviewTracks(Array.from(room.localParticipant.tracks.values()));
       attachParticipantTracks(room.localParticipant, previewContainer);
     }
 
@@ -106,6 +109,18 @@ export default class Room extends Component {
     this.props.activeRoom.disconnect();
   }
 
+  handlePause(e) {
+    this.props.previewTracks.forEach((track) => {
+      track.disable();
+    });
+  }
+
+  handlePlay(e) {
+    this.props.previewTracks.forEach((track) => {
+      track.enable();
+    });
+  }
+
   render() {
     return (
       <div id="room-controls">
@@ -113,6 +128,8 @@ export default class Room extends Component {
         <input type="text" value={this.state.roomName} placeholder="Enter a room name" onChange={this.handleInputRoomName} />
         {!this.props.activeRoom.state && <button onClick={this.handleJoinRoom}>Join Room</button>}
         {(this.props.activeRoom.state === 'connected') && <button onClick={this.handleLeaveRoom}>Leave Room</button>}
+        <button onClick={this.handlePause}>pause</button>
+        <button onClick={this.handlePlay}>play</button>
       </div>
     );
   }
@@ -126,6 +143,7 @@ Room.propTypes = {
     React.PropTypes.array,
     React.PropTypes.object,
   ]),
+  onSetPreviewTracks: React.PropTypes.func,
   onSetActiveRoom: React.PropTypes.func,
   onAddLog: React.PropTypes.func,
 };

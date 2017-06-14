@@ -44,6 +44,7 @@ class HomePage extends PureComponent { // eslint-disable-line react/prefer-state
             previewTracks={this.props.previewTracks}
             activeRoom={this.props.activeRoom}
             onSetActiveRoom={this.props.onSetActiveRoom}
+            onSetPreviewTracks={this.props.onSetPreviewTracks}
             onAddLog={this.props.onAddLog}
           />
         </div>
